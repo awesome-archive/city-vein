@@ -2,6 +2,7 @@
 import requests
 import bs4
 import os
+import pandas as pd
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'}
 url = 'http://hangzhou.8684.cn'
@@ -32,14 +33,53 @@ for link in links:
         line_soup = bs4.BeautifulSoup(line_html.text, 'lxml')
         bus_lines = line_soup.find_all('div', class_='bus_line_site')
         for bus_line in bus_lines:
-        	stations = []
-        	bus_stations = bus_line.find_all('a')
-        	for bus_station in bus_stations:
-        		stations.append(bus_station.get_text())
-        	if bus_lines.index(bus_line) == 0:
-        		line_info[line_name+"-posi"] = stations
-        	else:
-        		line_info[line_name+"-nega"] = stations
+            stations = []
+            bus_stations = bus_line.find_all('a')
+            for bus_station in bus_stations:
+                stations.append(bus_station.get_text())
+            if bus_lines.index(bus_line) == 0:
+                line_info[line_name+"-posi"] = stations
+            else:
+                line_info[line_name+"-nega"] = stations
         all_lines.update(line_info)
-    with open("./lines.json", "w") as f:
-    	f.write(str(all_lines))
+        break
+    # with open("./lines.json", "w") as f:
+    #     f.write(str(all_lines))
+
+from urllib import parse
+import hashlib
+import requests
+
+ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
+sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
+province = '浙江省'
+city = '杭州市'
+
+
+def get_position(address):
+    queryStr = '/geocoder/v2/?address=%s&output=json&ak=%s' % (province + city + address, ak)
+    encodedStr = parse.quote(queryStr, safe="/:=&?#+!$,;'@()*[]")
+    rawStr = encodedStr + sk
+    sn = (hashlib.md5(parse.quote_plus(rawStr).encode("utf8")).hexdigest())
+    url = parse.quote("http://api.map.baidu.com"+queryStr+"&sn="+sn, safe="/:=&?#+!$,;'@()*[]")
+    response = requests.get(url)
+    lng, lat = response.json()['result']['location']['lng'], response.json()['result']['location']['lat']
+    return lng, lat
+
+
+df = pd.DataFrame(columns=['source', 'target'])
+source = []
+target = []
+
+for line_name, line_stations in all_lines.items():
+    print(line_name, line_stations)
+    for i in range(len(line_stations)-1):
+        source.append(get_position(line_stations[i]))
+        target.append(get_position(line_stations[i+1]))
+    break
+
+df['source'] = source
+df['target'] = target
+df.to_csv('./data.csv', index=False)
+
+# print(get_position('古荡'))
