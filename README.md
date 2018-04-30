@@ -28,7 +28,9 @@
 
 ![](./beijing.gif) 
 
-###Dependency
+
+
+### Dependency
 
 ``` 
 1. 高德api
@@ -38,7 +40,7 @@
 5. *
 ```
 
-###Catalog
+### Catalog
 
 > lib: 百度echats依赖js文件
 
