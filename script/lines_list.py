@@ -60,7 +60,7 @@ def get_position(address):
 
 data = []
 
-with open('./lines.json', "r") as f:
+with open('../data/lines.json', "r") as f:
     lines = dict(eval(f.read()))
     for name, stations in lines.items():
         prev_lng, prev_lat = 0, 0

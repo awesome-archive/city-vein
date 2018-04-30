@@ -7,13 +7,6 @@ ee = 0.00669342162296594323  # 扁率
 
 
 def gcj02tobd09(lng, lat):
-    """
-    火星坐标系(GCJ-02)转百度坐标系(BD-09)
-    谷歌、高德——>百度
-    :param lng:火星坐标经度
-    :param lat:火星坐标纬度
-    :return:
-    """
     z = math.sqrt(lng * lng + lat * lat) + 0.00002 * math.sin(lat * x_pi)
     theta = math.atan2(lat, lng) + 0.000003 * math.cos(lng * x_pi)
     bd_lng = z * math.cos(theta) + 0.0065
@@ -22,13 +15,6 @@ def gcj02tobd09(lng, lat):
 
 
 def bd09togcj02(bd_lon, bd_lat):
-    """
-    百度坐标系(BD-09)转火星坐标系(GCJ-02)
-    百度——>谷歌、高德
-    :param bd_lat:百度坐标纬度
-    :param bd_lon:百度坐标经度
-    :return:转换后的坐标列表形式
-    """
     x = bd_lon - 0.0065
     y = bd_lat - 0.006
     z = math.sqrt(x * x + y * y) - 0.00002 * math.sin(y * x_pi)
@@ -39,12 +25,6 @@ def bd09togcj02(bd_lon, bd_lat):
 
 
 def wgs84togcj02(lng, lat):
-    """
-    WGS84转GCJ02(火星坐标系)
-    :param lng:WGS84坐标系的经度
-    :param lat:WGS84坐标系的纬度
-    :return:
-    """
     if out_of_china(lng, lat):  # 判断是否在国内
         return lng, lat
     dlat = transformlat(lng - 105.0, lat - 35.0)
@@ -61,12 +41,6 @@ def wgs84togcj02(lng, lat):
 
 
 def gcj02towgs84(lng, lat):
-    """
-    GCJ02(火星坐标系)转GPS84
-    :param lng:火星坐标系的经度
-    :param lat:火星坐标系纬度
-    :return:
-    """
     # if out_of_china(lng, lat):
     #    return lng, lat
     dlat = transformlat(lng - 105.0, lat - 35.0)
@@ -107,12 +81,6 @@ def transformlng(lng, lat):
 
 
 def out_of_china(lng, lat):
-    """
-    判断是否在国内，不在国内不做偏移
-    :param lng:
-    :param lat:
-    :return:
-    """
     if lng < 72.004 or lng > 137.8347:
         return True
     if lat < 0.8293 or lat > 55.8271:

@@ -20,7 +20,7 @@
     option = null;
     app.title = 'city-vein';
 
-    $.getJSON('./all_lines_beijing.json', function (data) {
+    $.getJSON('./data/all_lines_beijing_bus.json', function (data) {
         var hStep = 300 / (data.length - 1);
         var busLines = [].concat.apply([], data.map(function (busLine, idx) {
             var prevPt;
@@ -49,7 +49,7 @@
         myChart.setOption(option = {
             bmap: {
                 center: [116.407417, 39.904172],
-                zoom: 12,
+                zoom: 10,
                 roam: true,
                 mapStyle: {
                     'styleJson': [

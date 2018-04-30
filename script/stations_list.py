@@ -41,5 +41,5 @@ for link in links:
         # all_lines.update(line_info)
         all_lines.append(line_name)
         print("[INFO] get the info of line %s" % line_name)
-    with open("./lines_beijing.json", "w") as f:
+    with open("../data/lines_beijing.json", "w") as f:
         f.write(str(all_lines))

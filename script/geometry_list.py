@@ -1,5 +1,5 @@
 import sys
-import coord
+import script.coord
 import time
 import random
 import urllib
@@ -13,9 +13,11 @@ def get_proxy():
 def delete_proxy(proxy):
     requests.get("http://127.0.0.1:5010/delete/?proxy={}".format(proxy))
 
+
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
-  }
+}
+
 
 def getHtml(url):
     retry_count = 5
@@ -31,7 +33,6 @@ def getHtml(url):
             return html
         except Exception:
             retry_count -= 1
-    # 出错5次, 删除代理池中代理
     delete_proxy(proxy)
     return None
 
@@ -75,7 +76,7 @@ def extract_stations(bus_line):
         station_name = station['name']
         station_lng = station["xy_coords"].split(";")[0]
         station_lat = station["xy_coords"].split(";")[1]
-        wgs84cor1 = coord.gcj02towgs84(float(station_lng), float(station_lat))
+        wgs84cor1 = script.coord.gcj02towgs84(float(station_lng), float(station_lat))
         transfer_lng = wgs84cor1[0]
         transfer_lat = wgs84cor1[1]
         info.append(station_name)
@@ -97,9 +98,10 @@ def extract_line(bus_line):
         info = []
         point_lng = x_set[i]
         point_lat = y_set[i]
-        wgs84cor2 = coord.gcj02towgs84(float(point_lng), float(point_lat))
+        wgs84cor2 = script.coord.gcj02towgs84(float(point_lng), float(point_lat))
         transfer_lng = wgs84cor2[0]
         transfer_lat = wgs84cor2[1]
+        info.append(key_name)
         info.append(transfer_lng)
         info.append(transfer_lat)
         set.append(info)
@@ -124,20 +126,15 @@ def get_geometry_info(line):
     targetUrl = baseUrl + paramMerge
     try:
         req = getHtml(targetUrl)
-    except Exception as e:
-        return None
-    res = req.content
-    try:
+        res = req.content
         content = dict(eval(res))
-    except Exception as e:
-        return None
-    # print(content)
-    try:
         if (content["data"]["message"]) and content["data"]["busline_list"]:
             bus_lines = content["data"]["busline_list"]  ##busline 列表
             bus_line = bus_lines[0]
+            print(bus_line)
             bus_stations = extract_stations(bus_line)
             bus_line = extract_line(bus_line)
+
             # print(bus_stations)
             # print(busLine)
             # time.sleep(random.random() * random.randint(0, 7) + random.randint(0, 5))  # 设置随机休眠
@@ -166,7 +163,7 @@ def line_vector(line):
     return vector
 
 
-with open('./lines_beijing.json', 'r') as f:
+with open('../data/lines_hangzhou.json', 'r') as f:
     lines = list(eval(f.read()))
 
 all_lines = []
@@ -181,5 +178,5 @@ for line in lines:
     if line_base != None:
         all_lines.append(line_vector(line_base))
         print(len(all_lines))
-with open('./all_lines_hangzhou.json', 'w') as f:
+with open('../data/all_lines_hangzhou.json', 'w') as f:
     f.write(str(all_lines))
