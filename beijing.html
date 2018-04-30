@@ -5,14 +5,12 @@
 </head>
 <body style="height: 100%; margin: 0">
 <div id="container" style="height: 100%"></div>
-<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/jquery/jquery.js"></script>
-<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+<script type="text/javascript" src="lib/jquery.js"></script>
+<script type="text/javascript" src="lib/echarts-all-3.js"></script>
 <script type="text/javascript"
-        src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
-<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
-<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
-<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+        src="lib/dataTool.min.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+<script type="text/javascript" src="lib/bmap.min.js"></script>
 <script type="text/javascript">
     var dom = document.getElementById("container");
     var myChart = echarts.init(dom);
@@ -20,7 +18,7 @@
     option = null;
     app.title = 'city-vein';
 
-    $.getJSON('./data/all_lines_hangzhou_bus.json', function (data) {
+    $.getJSON('./data/all_lines_beijing_bus.json', function (data) {
         var hStep = 300 / (data.length - 1);
         var busLines = [].concat.apply([], data.map(function (busLine, idx) {
             var prevPt;
@@ -48,7 +46,7 @@
         }));
         myChart.setOption(option = {
             bmap: {
-                center: [120.209947, 30.245853],
+                center: [116.407417, 39.904172],
                 zoom: 10,
                 roam: true,
                 mapStyle: {
