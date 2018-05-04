@@ -23,6 +23,7 @@
 2.6 通过2.5可以绘制初步的结构图，但公交路线并非和实际道路重合，显得杂乱无章。
 2.7 考虑抓取道路信息进行匹配，或者调用路线规划api（公交部分），将我们矢量化后的线路匹配到道路上。
 2.8 高德地图的查询接口，是有一定的反爬虫机制的，需要不断迭代IP。
+2.9 用百度地图api重复了一下上述过程。
 ```
 
 3. 百度echarts(北京为例)
@@ -33,6 +34,10 @@
 > [杭州](https://www.96486d9b.xyz/City-Vein/hangzhou.html)
 
 > [北京](https://www.96486d9b.xyz/City-Vein/beijing.html)
+
+> [上海](https://www.96486d9b.xyz/City-Vein/shanghai.html)
+
+> [郑州](https://www.96486d9b.xyz/City-Vein/zhengzhou.html)
 ### Dependency
 
 ``` 

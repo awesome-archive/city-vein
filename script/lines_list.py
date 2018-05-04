@@ -2,10 +2,12 @@ from urllib import parse
 import hashlib
 import requests
 
-ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
-sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
-province = '浙江省'
-city = '杭州市'
+# ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
+ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
+# sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
+sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
+province = ''
+city = '郑州市'
 level = '公交站'
 
 
@@ -19,25 +21,6 @@ def get_position(address):
     lng, lat = response.json()['result']['location']['lng'], response.json()['result']['location']['lat']
     precise, confidence = response.json()['result']['precise'], response.json()['result']['confidence']
     return lng, lat, precise, confidence
-
-
-# with open('./lines.json', "r") as f:
-#     lines = dict(eval(f.read()))
-#     for name, stations in lines.items():
-#         for station in stations:
-#             if station not in count.keys():
-#                 count[station] = 1
-#                 try:
-#                     geometry[station] = get_position(station)
-#                 except Exception as e:
-#                     print("[INFO] some error occur")
-#                     continue
-#             else:
-#                 count[station] += 1
-#         break
-#
-# count = sorted(count.items(),key = lambda x:x[1], reverse=True)
-# print(count)
 
 
 # df = pd.DataFrame(columns=['source', 'target'])
@@ -60,28 +43,22 @@ def get_position(address):
 
 data = []
 
-with open('../data/lines.json', "r") as f:
+with open('../data/lines_zhengzhou.json', "r") as f:
     lines = dict(eval(f.read()))
     for name, stations in lines.items():
-        prev_lng, prev_lat = 0, 0
         line = []
-        for station in stations:
-            try:
-                lng, lat, precise, confidence = get_position(station)
-                print(precise, confidence)
-                # if confidence <= 50:
-                #     continue
-            except Exception as e:
-                continue
-            if stations.index(station) == 0:
-                line.append(int(1e4 * lng))
-                line.append(int(1e4 * lat))
-                prev_lng, prev_lat = lng, lat
-            else:
-                line.append(int(1e4 * (lng - prev_lng)))
-                line.append(int(1e4 * (lat - prev_lat)))
-                prev_lng, prev_lat = lng, lat
-        data.append(line)
-        break
+        try:
+            lng_1, lat_1, precise_1, confidence_1 = get_position(stations[0])
+            line.append(lng_1)
+            line.append(lat_1)
+            lng_2, lat_2, precise_2, confidence_2 = get_position(stations[-1])
+            line.append(lng_2)
+            line.append(lat_2)
 
-print(data)
+        except Exception as e:
+            continue
+        data.append(line)
+        print(len(data))
+
+with open('../data/all_lines_zhengzhou.json', 'w') as f:
+    f.write(str(data))

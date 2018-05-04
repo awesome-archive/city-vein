@@ -1,5 +1,7 @@
 import urllib
 import requests
+import hashlib
+
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
@@ -82,21 +84,57 @@ def get_bus_info(start_lng, start_lat, end_lng, end_lat):
         return None
     return filter_route
 
+def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
+    # ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
+    ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
+    # sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
+    sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
+    global null
+    null = ''
+    queryStr = '/direction/v2/transit?origin=%.4f,%.4f&destination=%.4f,%.4f&ak=%s' % (start_lat, start_lng, end_lat, end_lng, ak)
+    encodedStr = urllib.parse.quote(queryStr, safe="/:=&?#+!$,;'@()*[]")
+    rawStr = encodedStr + sk
+    sn = (hashlib.md5(urllib.parse.quote_plus(rawStr).encode("utf8")).hexdigest())
+    url = urllib.parse.quote("http://api.map.baidu.com" + queryStr + "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
+    try:
+        response = requests.get(url)
+        content = response.content
+        content = dict(eval(content))
+        steps = content['result']['routes'][0]['steps']
+        route = []
+        for step in steps:
+            path = step[0]['path']
+            polylines = path.split(';')
+            for polyline in polylines:
+                lng = float(polyline.split(',')[0])
+                lat = float(polyline.split(',')[1])
+                route.append(lng)
+                route.append(lat)
+        for i in range(-2, -len(route), -2):
+            route[i] = int(1e4 * (route[i] - route[i - 2]))
+            route[i + 1] = int(1e4 * (route[i + 1] - route[i - 1]))
+        route[0] = int(1e4 * route[0])
+        route[1] = int(1e4 * route[1])
+        filter_route = []
+        for i in range(0, len(route), 2):
+            if route[i] != 0 or route[i + 1] != 0:
+                filter_route.append(route[i])
+                filter_route.append(route[i + 1])
+        return filter_route
+    except Exception as e:
+        return None
 
-with open('../data/all_lines_beijing.json') as f:
+with open('../data/all_lines_zhengzhou.json') as f:
     lines = list(eval(f.read()))
 all_route = []
 for line in lines:
     start_lng, start_lat = line[0], line[1]
-    end_lng, end_lat = start_lng, start_lat
-    for i in range(2, len(line), 2):
-        end_lng += line[i]
-        end_lat += line[i + 1]
-    route = get_walk_info(start_lng / 1e4, start_lat / 1e4, end_lng / 1e4, end_lat / 1e4)
+    end_lng, end_lat = line[2], line[3]
+    route = get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat)
     print(len(all_route))
     print(route)
     if route != None and len(route) > 2:
         all_route.append(route)
 
-with open('../data/all_lines_beijing_walk.json', 'w') as f:
+with open('../data/all_lines_zhengzhou_bus_baidu.json', 'w') as f:
     f.write(str(all_route))

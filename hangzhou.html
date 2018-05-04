@@ -18,7 +18,7 @@
     option = null;
     app.title = 'city-vein';
 
-    $.getJSON('./data/all_lines_hangzhou_bus.json', function (data) {
+    $.getJSON('./data/all_lines_hangzhou_bus_baidu.json', function (data) {
         var hStep = 300 / (data.length - 1);
         var busLines = [].concat.apply([], data.map(function (busLine, idx) {
             var prevPt;
