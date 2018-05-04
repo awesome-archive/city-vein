@@ -18,7 +18,7 @@
     option = null;
     app.title = 'city-vein';
 
-    $.getJSON('./data/all_lines_zhengzhou_bus_baidu.json', function (data) {
+    $.getJSON('./data/all_lines_xian_bus_baidu.json', function (data) {
         var hStep = 300 / (data.length - 1);
         var busLines = [].concat.apply([], data.map(function (busLine, idx) {
             var prevPt;
@@ -46,7 +46,7 @@
         }));
         myChart.setOption(option = {
             bmap: {
-                center: [113.666051,34.754125],
+                center: [108.939621,34.343147],
                 zoom: 11,
                 roam: true,
                 mapStyle: {

@@ -7,7 +7,7 @@ ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
 # sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
 sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
 province = ''
-city = '郑州市'
+city = '西安市'
 level = '公交站'
 
 
@@ -43,7 +43,7 @@ def get_position(address):
 
 data = []
 
-with open('../data/lines_zhengzhou.json', "r") as f:
+with open('../data/lines_xian.json', "r", encoding='utf-8') as f:
     lines = dict(eval(f.read()))
     for name, stations in lines.items():
         line = []
@@ -60,5 +60,5 @@ with open('../data/lines_zhengzhou.json', "r") as f:
         data.append(line)
         print(len(data))
 
-with open('../data/all_lines_zhengzhou.json', 'w') as f:
+with open('../data/all_lines_xian.json', 'w', encoding='utf-8') as f:
     f.write(str(data))

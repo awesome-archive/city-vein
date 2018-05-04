@@ -3,7 +3,7 @@ import bs4
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'}
-url = 'http://zhengzhou.8684.cn'
+url = 'http://xian.8684.cn'
 html = requests.get(url, headers=headers)
 # print (main_html.text)
 soup = bs4.BeautifulSoup(html.text, 'lxml')
@@ -34,11 +34,12 @@ for link in links:
                     stations.append(bus_station.get_text())
                 if bus_lines.index(bus_line) == 0:
                     line_info[line_name] = stations
+
             all_lines.update(line_info)
         except Exception as e:
             print("[INFO] some error occur")
             continue
         # all_lines.append(line_name)
         print("[INFO] get the info of line %s" % line_name)
-    with open("../data/lines_zhengzhou.json", "w") as f:
+    with open("../data/lines_xian.json", "w", encoding='utf-8') as f:
         f.write(str(all_lines))

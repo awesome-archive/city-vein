@@ -124,7 +124,7 @@ def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
     except Exception as e:
         return None
 
-with open('../data/all_lines_zhengzhou.json') as f:
+with open('../data/all_lines_xian.json') as f:
     lines = list(eval(f.read()))
 all_route = []
 for line in lines:
@@ -136,5 +136,5 @@ for line in lines:
     if route != None and len(route) > 2:
         all_route.append(route)
 
-with open('../data/all_lines_zhengzhou_bus_baidu.json', 'w') as f:
+with open('../data/all_lines_xian_bus_baidu.json', 'w') as f:
     f.write(str(all_route))

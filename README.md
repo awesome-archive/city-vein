@@ -38,6 +38,8 @@
 > [上海](https://www.96486d9b.xyz/City-Vein/shanghai.html)
 
 > [郑州](https://www.96486d9b.xyz/City-Vein/zhengzhou.html)
+
+> [西安](https://www.96486d9b.xyz/City-Vein/xian.html)
 ### Dependency
 
 ``` 
