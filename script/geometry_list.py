@@ -79,7 +79,6 @@ def extract_stations(bus_line):
         wgs84cor1 = script.coord.gcj02towgs84(float(station_lng), float(station_lat))
         transfer_lng = wgs84cor1[0]
         transfer_lat = wgs84cor1[1]
-        info.append(station_name)
         info.append(transfer_lng)
         info.append(transfer_lat)
         set.append(info)
@@ -101,7 +100,6 @@ def extract_line(bus_line):
         wgs84cor2 = script.coord.gcj02towgs84(float(point_lng), float(point_lat))
         transfer_lng = wgs84cor2[0]
         transfer_lat = wgs84cor2[1]
-        info.append(key_name)
         info.append(transfer_lng)
         info.append(transfer_lat)
         set.append(info)
@@ -109,8 +107,7 @@ def extract_line(bus_line):
     return set
 
 
-adcode, center, left, right, down, up = get_city_info("杭州市")
-print(adcode, center, left, right, down, up)
+adcode, center, left, right, down, up = get_city_info("重庆市")
 
 
 def get_geometry_info(line):
@@ -131,13 +128,12 @@ def get_geometry_info(line):
         if (content["data"]["message"]) and content["data"]["busline_list"]:
             bus_lines = content["data"]["busline_list"]  ##busline 列表
             bus_line = bus_lines[0]
-            print(bus_line)
             bus_stations = extract_stations(bus_line)
             bus_line = extract_line(bus_line)
 
             # print(bus_stations)
             # print(busLine)
-            # time.sleep(random.random() * random.randint(0, 7) + random.randint(0, 5))  # 设置随机休眠
+              # 设置随机休眠
             return bus_stations
 
         else:
@@ -163,20 +159,29 @@ def line_vector(line):
     return vector
 
 
-with open('../data/lines_hangzhou.json', 'r') as f:
+with open('../data/lines_chongqing.json', 'r', encoding='utf-8') as f:
     lines = list(eval(f.read()))
 
 all_lines = []
 
 for line in lines:
-    print(line)
+    # print(line)
     line_base = get_geometry_info(line)
-    if line_base == None:
-        if line.find("路") != -1:
-            line = line[:line.find("路") + 1]
-        line_base = get_geometry_info(line)
     if line_base != None:
-        all_lines.append(line_vector(line_base))
-        print(len(all_lines))
-with open('../data/all_lines_hangzhou.json', 'w') as f:
+        tmp = []
+        tmp.append(line_base[0][0])
+        tmp.append(line_base[0][1])
+        tmp.append(line_base[-1][0])
+        tmp.append(line_base[-1][1])
+        all_lines.append(tmp)
+    print(len(all_lines))
+    time.sleep(random.random() * random.randint(0, 7) + random.randint(0, 5))
+# if line_base == None:
+#     if line.find("路") != -1:
+#         line = line[:line.find("路") + 1]
+#     line_base = get_geometry_info(line)
+# if line_base != None:
+#     all_lines.append(line_vector(line_base))
+#     print(len(all_lines))
+with open('../data/all_lines_chongqing.json', 'w', encoding='utf-8') as f:
     f.write(str(all_lines))

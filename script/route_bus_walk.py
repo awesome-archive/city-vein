@@ -2,7 +2,6 @@ import urllib
 import requests
 import hashlib
 
-
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
 }
@@ -84,6 +83,7 @@ def get_bus_info(start_lng, start_lat, end_lng, end_lat):
         return None
     return filter_route
 
+
 def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
     ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
     # ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
@@ -91,7 +91,8 @@ def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
     # sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
     global null
     null = ''
-    queryStr = '/direction/v2/transit?origin=%.4f,%.4f&destination=%.4f,%.4f&ak=%s' % (start_lat, start_lng, end_lat, end_lng, ak)
+    queryStr = '/direction/v2/transit?origin=%f,%f&destination=%f,%f&ak=%s' % (
+    start_lat, start_lng, end_lat, end_lng, ak)
     encodedStr = urllib.parse.quote(queryStr, safe="/:=&?#+!$,;'@()*[]")
     rawStr = encodedStr + sk
     sn = (hashlib.md5(urllib.parse.quote_plus(rawStr).encode("utf8")).hexdigest())
@@ -124,7 +125,8 @@ def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
     except Exception as e:
         return None
 
-with open('../data/all_lines_chongqing.json') as f:
+
+with open('../data/all_lines_beijing.json') as f:
     lines = list(eval(f.read()))
 all_route = []
 for line in lines:
@@ -135,5 +137,5 @@ for line in lines:
     if route != None and len(route) > 2:
         all_route.append(route)
 
-with open('../data/all_lines_chongqing_bus_baidu.json', 'w') as f:
+with open('../data/all_lines_beijing_bus_baidu.json', 'w') as f:
     f.write(str(all_route))

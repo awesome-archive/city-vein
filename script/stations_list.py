@@ -3,7 +3,7 @@ import bs4
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'}
-url = 'http://chongqing.8684.cn'
+url = 'http://beijing.8684.cn'
 html = requests.get(url, headers=headers)
 # print (main_html.text)
 soup = bs4.BeautifulSoup(html.text, 'lxml')
@@ -41,5 +41,5 @@ for link in links:
             continue
         # all_lines.append(line_name)
         print("[INFO] get the info of line %s" % line_name)
-    with open("../data/lines_chongqing.json", "w", encoding='utf-8') as f:
+    with open("../data/lines_beijing.json", "w", encoding='utf-8') as f:
         f.write(str(all_lines))
