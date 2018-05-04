@@ -85,10 +85,10 @@ def get_bus_info(start_lng, start_lat, end_lng, end_lat):
     return filter_route
 
 def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
-    # ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
-    ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
-    # sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
-    sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
+    ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
+    # ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
+    sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
+    # sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
     global null
     null = ''
     queryStr = '/direction/v2/transit?origin=%.4f,%.4f&destination=%.4f,%.4f&ak=%s' % (start_lat, start_lng, end_lat, end_lng, ak)
@@ -124,7 +124,7 @@ def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
     except Exception as e:
         return None
 
-with open('../data/all_lines_xian.json') as f:
+with open('../data/all_lines_guangzhou.json') as f:
     lines = list(eval(f.read()))
 all_route = []
 for line in lines:
@@ -136,5 +136,5 @@ for line in lines:
     if route != None and len(route) > 2:
         all_route.append(route)
 
-with open('../data/all_lines_xian_bus_baidu.json', 'w') as f:
+with open('../data/all_lines_guangzhou_bus_baidu.json', 'w') as f:
     f.write(str(all_route))

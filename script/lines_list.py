@@ -2,12 +2,12 @@ from urllib import parse
 import hashlib
 import requests
 
-# ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
-ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
-# sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
-sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
+ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
+# ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
+sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
+# sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
 province = ''
-city = '西安市'
+city = '广州市'
 level = '公交站'
 
 
@@ -43,7 +43,7 @@ def get_position(address):
 
 data = []
 
-with open('../data/lines_xian.json', "r", encoding='utf-8') as f:
+with open('../data/lines_guangzhou.json', "r", encoding='utf-8') as f:
     lines = dict(eval(f.read()))
     for name, stations in lines.items():
         line = []
@@ -60,5 +60,5 @@ with open('../data/lines_xian.json', "r", encoding='utf-8') as f:
         data.append(line)
         print(len(data))
 
-with open('../data/all_lines_xian.json', 'w', encoding='utf-8') as f:
+with open('../data/all_lines_guangzhou.json', 'w', encoding='utf-8') as f:
     f.write(str(data))
