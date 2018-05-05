@@ -2,13 +2,8 @@ from urllib import parse
 import hashlib
 import requests
 
-ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
-# ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
-sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
-
-
-# sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
-
+ak = ''
+sk = ''
 def get_position(address):
     province = ''
     city = '北京'

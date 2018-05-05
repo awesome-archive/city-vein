@@ -10,7 +10,7 @@ headers = {
 def get_walk_info(start_lng, start_lat, end_lng, end_lat):
     baseUrl = "http://restapi.amap.com/v3/direction/walking?"
     params = {
-        'key': 'fa6e09fde4518c9b6416542611a5da42',
+        'key': '',
         'origin': '%f,%f' % (start_lng, start_lat),
         'destination': '%f,%f' % (end_lng, end_lat),
     }
@@ -48,7 +48,7 @@ def get_walk_info(start_lng, start_lat, end_lng, end_lat):
 def get_bus_info(start_lng, start_lat, end_lng, end_lat):
     baseUrl = "http://restapi.amap.com/v3/direction/transit/integrated?"
     params = {
-        'key': 'fa6e09fde4518c9b6416542611a5da42',
+        'key': '',
         'origin': '%f,%f' % (start_lng, start_lat),
         'destination': '%f,%f' % (end_lng, end_lat),
         'city': '北京市'
@@ -85,10 +85,8 @@ def get_bus_info(start_lng, start_lat, end_lng, end_lat):
 
 
 def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
-    ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
-    # ak = 'Ad319bztEzGnTeK6UTG70ODKEUEsoeAd'
-    sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
-    # sk = 'w3icqUMiU3tUF2C4RmpMS5i4OkHbsIl3'
+    ak = ''
+    sk = ''
     global null
     null = ''
     queryStr = '/direction/v2/transit?origin=%f,%f&destination=%f,%f&ak=%s' % (

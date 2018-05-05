@@ -40,7 +40,7 @@ def getHtml(url):
 def get_city_info(city):
     api = 'http://restapi.amap.com/v3/config/district?'
     params = {
-        'key': 'fa6e09fde4518c9b6416542611a5da42',
+        'key': '',
         'keywords': '%s' % city,
         'subdistrict': '0',
         'extensions': 'all'
