@@ -5,12 +5,11 @@
 </head>
 <body style="height: 100%; margin: 0">
 <div id="container" style="height: 100%"></div>
-<script type="text/javascript" src="lib/jquery.js"></script>
-<script type="text/javascript" src="lib/echarts-all-3.js"></script>
-<script type="text/javascript"
-        src="lib/dataTool.min.js"></script>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../lib/echarts.js"></script>
+<script type="text/javascript" src="../lib/dataTool.min.js"></script>
 <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
-<script type="text/javascript" src="lib/bmap.min.js"></script>
+<script type="text/javascript" src="../lib/bmap.min.js"></script>
 <script type="text/javascript">
     var dom = document.getElementById("container");
     var myChart = echarts.init(dom);
@@ -18,7 +17,7 @@
     option = null;
     app.title = 'city-vein';
 
-    $.getJSON('./data/all_lines_hangzhou_bus_baidu.json', function (data) {
+    $.getJSON('../data/lines_data_chongqing.json', function (data) {
         var hStep = 300 / (data.length - 1);
         var busLines = [].concat.apply([], data.map(function (busLine, idx) {
             var prevPt;
@@ -46,8 +45,8 @@
         }));
         myChart.setOption(option = {
             bmap: {
-                center: [120.209947, 30.245853],
-                zoom: 10,
+                center: [106.550464,29.563761],
+                zoom: 11,
                 roam: true,
                 mapStyle: {
                     'styleJson': [
@@ -202,7 +201,7 @@
                 effect: {
                     constantSpeed: 20,
                     show: true,
-                    trailLength: 0.1,
+                    trailLength: 0.0,
                     symbolSize: 1.5
                 },
                 zlevel: 1
