@@ -1,8 +1,8 @@
 import requests
 import bs4
 
-city = 'changsha'
-city_CN = "长沙"
+city = 'wuhan'
+city_CN = "武汉"
 ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
 sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
 part1 = 0
