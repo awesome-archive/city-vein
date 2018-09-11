@@ -34,7 +34,7 @@ def _get_all_lines(city_en):
         link_soup = bs4.BeautifulSoup(link_html.text, 'lxml')
         lines = link_soup.find('div', class_='stie_list').find_all('a')
         for line in lines:
-            line_href = line['href']
+            # line_href = line['href']
             line_name = line.get_text()
             # try:
             #     line_html = requests.get(url + line_href, headers=headers)
@@ -99,7 +99,7 @@ def _get_line_info(city_name, line_name):
         busstops = lines['busstops']
 
         return polyline
-    except Exception as e:
+    except Exception:
         return None
 
 
@@ -178,8 +178,8 @@ def gen_html(city_zh, city_en):
             'centerX', center[0]).replace('centerY', center[1]))
 
 
-city_zh = '奥门'
-city_en = 'aomen'
+city_zh = '开封'
+city_en = 'kaifeng'
 
 
 gen_html(city_zh, city_en)

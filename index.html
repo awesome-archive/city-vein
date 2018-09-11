@@ -5,10 +5,10 @@
 </head>
 <body style="height: 100%; margin: 0">
 <div id="container" style="height: 100%"></div>
-<script type="text/javascript" src="./lib/jquery.js"></script>
-<script type="text/javascript" src="./lib/echarts.js"></script>
-<script type="text/javascript" src="./lib/dataTool.min.js"></script>
-<script type="text/javascript" src="./lib/bmap.min.js"></script>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../lib/echarts.js"></script>
+<script type="text/javascript" src="../lib/dataTool.min.js"></script>
+<script type="text/javascript" src="../lib/bmap.min.js"></script>
 <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
 <script type="text/javascript">
     var dom = document.getElementById("container");
@@ -16,7 +16,8 @@
     var app = {};
     option = null;
     app.title = 'city-vein';
-    $.getJSON('./data/lines_data_beijing.json', function (data) {
+
+    $.getJSON('../data/beijing.data', function (data) {
         var hStep = 300 / (data.length - 1);
         var busLines = [].concat.apply([], data.map(function (busLine, idx) {
             var prevPt;
@@ -31,7 +32,7 @@
                 }
                 prevPt = pt;
 
-                points.push([pt[0] / 1e4, pt[1] / 1e4]);
+                points.push([pt[0], pt[1]]);
             }
             return {
                 coords: points,
