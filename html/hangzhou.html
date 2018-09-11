@@ -17,7 +17,7 @@
     option = null;
     app.title = 'city-vein';
 
-    $.getJSON('../data/lines_data_hangzhou.json', function (data) {
+    $.getJSON('../data/hangzhou.data', function (data) {
         var hStep = 300 / (data.length - 1);
         var busLines = [].concat.apply([], data.map(function (busLine, idx) {
             var prevPt;
@@ -32,7 +32,7 @@
                 }
                 prevPt = pt;
 
-                points.push([pt[0] / 1e4, pt[1] / 1e4]);
+                points.push([pt[0], pt[1]]);
             }
             return {
                 coords: points,
