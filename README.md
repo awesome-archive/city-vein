@@ -24,6 +24,10 @@
 
 ![](./gif/guangzhou.gif)
 
+[深圳](https://96486d9b.github.io/city-vein/html/shenzhen.html)
+
+![](./gif/shenzhen.gif)
+
 [西安](https://96486d9b.github.io/city-vein/html/xian.html)
 
 ![](./gif/xian.gif)
@@ -40,7 +44,6 @@
 
 ![](./gif/nanjing.gif)
 
-[深圳](https://96486d9b.github.io/city-vein/html/shenzhen.html)
 [郑州](https://96486d9b.github.io/city-vein/html/zhengzhou.html)
 [开封](https://96486d9b.github.io/city-vein/html/kaifeng.html)
 [天津](https://96486d9b.github.io/city-vein/html/tianjin.html)
