@@ -178,8 +178,8 @@ def gen_html(city_zh, city_en):
             'centerX', center[0]).replace('centerY', center[1]))
 
 
-city_zh = '开封'
-city_en = 'kaifeng'
+city_zh = '深圳'
+city_en = 'shenzhen'
 
 
 gen_html(city_zh, city_en)
