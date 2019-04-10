@@ -142,7 +142,7 @@ def _get_bus_lines(city_zh, city_en):
 def _get_city_info(city_zh):
     api = 'http://restapi.amap.com/v3/config/district?'
     params = {
-        'key': 'fa6e09fde4518c9b6416542611a5da42',
+        'key': 'cc8945c85d54a465fbb2e8502d890100',
         'keywords': '%s' % city_zh,
         'subdistrict': '0',
         'extensions': 'all'
@@ -174,12 +174,11 @@ def gen_html(city_zh, city_en):
     with open('./html/template.html', 'r') as f:
         content = str(f.read())
     with open('./html/%s.html' % city_en, 'w+') as wf:
-        wf.write(content.replace('template', city_en).replace(
-            'centerX', center[0]).replace('centerY', center[1]))
+        wf.write(content.replace('city_name', city_en).replace('centerX', center[0]).replace('centerY', center[1]))
 
 
-city_zh = '深圳'
-city_en = 'shenzhen'
+city_zh = '济南'
+city_en = 'jinan'
 
 
 gen_html(city_zh, city_en)
