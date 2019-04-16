@@ -16,10 +16,6 @@
 
 ![](./gif/shanghai.gif)
 
-[香港](https://96486d9b.github.io/city-vein/html/hongkong.html)
-
-![](./gif/hongkong.gif)
-
 [广州](https://96486d9b.github.io/city-vein/html/guangzhou.html)
 
 ![](./gif/guangzhou.gif)
@@ -36,14 +32,9 @@
 
 ![](./gif/chengdu.gif)
 
+[香港](https://96486d9b.github.io/city-vein/html/hongkong.html)
 [重庆](https://96486d9b.github.io/city-vein/html/chongqing.html)
-
-![](./gif/chongqing.gif)
-
 [南京](https://96486d9b.github.io/city-vein/html/nanjing.html)
-
-![](./gif/nanjing.gif)
-
 [郑州](https://96486d9b.github.io/city-vein/html/zhengzhou.html)
 [开封](https://96486d9b.github.io/city-vein/html/kaifeng.html)
 [天津](https://96486d9b.github.io/city-vein/html/tianjin.html)
@@ -54,4 +45,4 @@
 [济南](https://96486d9b.github.io/city-vein/html/jinan.html)
 
 ### Related
-[echarts demo](https://gallery.echartsjs.com/editor.html?c=bmap-bus)
+[Echarts Demo](https://gallery.echartsjs.com/editor.html?c=bmap-bus)

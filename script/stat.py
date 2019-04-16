@@ -27,7 +27,7 @@ def _get_line_info(city_name):
     while True:
         params = {
             'extensions': 'all',
-            'key': 'fa6e09fde4518c9b6416542611a5da42',
+            'key': '',
             'keywords': '公交线路',
             'city': city_name,
             'citylimit': 'true',
