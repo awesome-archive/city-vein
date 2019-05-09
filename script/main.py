@@ -177,8 +177,8 @@ def gen_html(city_zh, city_en):
         wf.write(content.replace('city_name', city_en).replace('centerX', center[0]).replace('centerY', center[1]))
 
 
-city_zh = '济南'
-city_en = 'jinan'
+city_zh = '大连'
+city_en = 'dalian'
 
 
 gen_html(city_zh, city_en)

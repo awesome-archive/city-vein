@@ -43,6 +43,7 @@
 [武汉](https://96486d9b.github.io/city-vein/html/wuhan.html)
 [澳门](https://96486d9b.github.io/city-vein/html/aomen.html)
 [济南](https://96486d9b.github.io/city-vein/html/jinan.html)
+[大连](https://96486d9b.github.io/city-vein/html/dalian.html)
 
 ### Related
 [Echarts Demo](https://gallery.echartsjs.com/editor.html?c=bmap-bus)
