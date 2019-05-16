@@ -1,21 +1,52 @@
 <!DOCTYPE html>
 <html style="height: 100%">
+
 <head>
     <meta charset="utf-8">
 </head>
+
+<style>
+    #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 15000;
+    }
+
+    #loading img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 50px;
+        height: 50px;
+        margin-top: -25px;
+        margin-left: -25px;
+    }
+</style>
+
 <body style="height: 100%; margin: 0">
-<div id="container" style="height: 100%"></div>
-<script type="text/javascript" src="./lib/jquery.js"></script>
-<script type="text/javascript" src="./lib/echarts.js"></script>
-<script type="text/javascript" src="./lib/dataTool.min.js"></script>
-<script type="text/javascript" src="./lib/bmap.min.js"></script>
-<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=royfCOIGnFjRxA4vNKyYZQxrBE9ruMNb"></script>
-<script>
-    var root = true;
-    var city = 'hangzhou';
-    var position = [120.209947, 30.245853];
-    var scale = 11;
-</script>
-<script type='text/javascript' src="./lib/config.js"></script>
+    <div id="loading" style="display: none;">
+        <img src="./lib/loading.svg">
+    </div>
+    <div id="container" style="height: 100%;">
+    </div>
+    <script src="https://cdn.bootcss.com/PreloadJS/1.0.1/preloadjs.min.js"></script>
+    <script type="text/javascript" src="./lib/jquery.js"></script>
+    <script type="text/javascript" src="./lib/echarts.js"></script>
+    <script type="text/javascript" src="./lib/dataTool.min.js"></script>
+    <script type="text/javascript" src="./lib/bmap.min.js"></script>
+    <script type="text/javascript"
+        src="https://api.map.baidu.com/api?v=2.0&ak=royfCOIGnFjRxA4vNKyYZQxrBE9ruMNb"></script>
+    <script>
+        var root = true;
+        var city = 'hangzhou';
+        var position = [120.209947, 30.245853];
+        var scale = 11;
+    </script>
+    <script type='text/javascript' src="./lib/config.js"></script>
 </body>
+
 </html>
