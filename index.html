@@ -7,25 +7,16 @@
 
 <body style="height: 100%; margin: 0">
     <link rel="stylesheet" type="text/css" href="./lib/loading.css" />
-    <div id="loading" style="display: none;">
-        <img src="./lib/loading.svg">
-    </div>
-    <div id="container" style="height: 100%;">
-    </div>
-    <script src="https://cdn.bootcss.com/PreloadJS/1.0.1/preloadjs.min.js"></script>
-    <script type="text/javascript" src="./lib/jquery.js"></script>
-    <script type="text/javascript" src="./lib/echarts.js"></script>
-    <script type="text/javascript" src="./lib/dataTool.min.js"></script>
-    <script type="text/javascript" src="./lib/bmap.min.js"></script>
-    <script type="text/javascript"
-        src="https://api.map.baidu.com/api?v=2.0&ak=royfCOIGnFjRxA4vNKyYZQxrBE9ruMNb"></script>
-    <script>
-        var root = true;
-        var city = 'hangzhou';
-        var position = [120.209947, 30.245853];
-        var scale = 11;
-    </script>
-    <script type='text/javascript' src="./lib/config.js"></script>
+    <div id="loading" style="display: none;"><img src="./lib/loading.svg"></div>
+    <div id="container" style="height: 100%;"></div>
+
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/3.8.5/echarts.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/3.8.5/extension/dataTool.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/3.8.5/extension/bmap.min.js"></script>
+    <script src="https://api.map.baidu.com/api?v=2.0&ak=royfCOIGnFjRxA4vNKyYZQxrBE9ruMNb"></script>
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.6/dat.gui.min.js"></script>
+    <script src="./lib/util.js"></script>
 </body>
 
 </html>
