@@ -11,13 +11,13 @@
 
 ### Run
 
-```python
-python script/main.py
+```
+python script/main.py # zh_en: 'hangzhou' zh_cn: '杭州'
 ```
 
 ### Example
 
-GIF 北京 上海 杭州 成都 广州 深圳 南京 武汉 香港 天津 西安 郑州
+[GIF](https://github.com/96486d9b/city-vein/tree/master/gif) 北京 上海 杭州 成都 广州 深圳 南京 武汉 香港 天津 西安 郑州
 
 [GitHub Page](https://96486d9b.github.io/city-vein) 澳门 长沙 重庆 大连 济南 开封 洛阳 南昌 青岛 沈阳 苏州 厦门 银川 
 
