@@ -4,6 +4,7 @@ import hashlib
 import bs4
 import logging
 import random
+import math
 
 
 logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s')
@@ -106,6 +107,16 @@ class city_vein():
         except Exception:
             return None
 
+    def _transfer(self, lng, lat):
+        x_pi = math.pi * 3000.0 / 180.0
+        x, y = lng, lat
+        z = math.sqrt(x * x + y * y) + 0.00002 * math.sin(y * x_pi)
+        theta = math.atan2(y, x) + 0.000003 * math.cos(x * x_pi);
+        lng = z * math.cos(theta) + 0.0065
+        lat = z * math.sin(theta) + 0.006
+        return lng, lat
+
+
     def _get_bus_lines(self):
         _, lines = self._get_all_lines()
         lines_info = []
@@ -121,6 +132,7 @@ class city_vein():
                 for polypoint in polypoints:
                     x = float(polypoint.split(',')[0])
                     y = float(polypoint.split(',')[1])
+                    x, y = self._transfer(x, y)
                     polyX.append(x)
                     polyY.append(y)
                 diffX.append(polyX[0])
@@ -162,6 +174,7 @@ class city_vein():
             if i.find('|') != -1:
                 continue
             lng, lat = float(i.split(',')[0]), float(i.split(',')[1])
+            lng, lat = self._transfer(lng, lat)
             lngs.append(lng)
             lats.append(lat)
         lngs.sort()
@@ -169,9 +182,9 @@ class city_vein():
         return center.split(',')
 
     def generate(self):
-        # data = self._get_bus_lines()
-        # with open('./data/{}.data'.format(self.city_en), 'w+') as wf:
-        #     wf.write(str(data))
+        data = self._get_bus_lines()
+        with open('./data/{}.data'.format(self.city_en), 'w+') as wf:
+            wf.write(str(data))
 
         center = self._get_city_info()
         with open('./data/{}.json'.format(self.city_en), 'w+') as wf:
@@ -182,5 +195,5 @@ class city_vein():
 
 
 if __name__ == "__main__":
-    obj = city_vein('qingdao', '青岛')
+    obj = city_vein('changsha', '长沙')
     obj.generate()
