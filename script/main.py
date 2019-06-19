@@ -117,7 +117,7 @@ class city_vein():
         return lng, lat
 
 
-    def _get_bus_lines(self):
+    def _get_bus_lines(self, digits=4):
         _, lines = self._get_all_lines()
         lines_info = []
         for line in lines:
@@ -133,16 +133,18 @@ class city_vein():
                     x = float(polypoint.split(',')[0])
                     y = float(polypoint.split(',')[1])
                     x, y = self._transfer(x, y)
+                    x, y = round(x, digits), round(y, digits)
                     polyX.append(x)
                     polyY.append(y)
+
                 diffX.append(polyX[0])
                 diffY.append(polyY[0])
                 for i in range(0, len(polyX)-1):
                     diffX.append(polyX[i+1] - polyX[i])
                     diffY.append(polyY[i+1] - polyY[i])
-                # for i in range(0, len(diffX)):
-                #     diffX[i] = int(diffX[i] * 10000)
-                #     diffY[i] = int(diffY[i] * 10000)
+                for i in range(0, len(diffX)):
+                     diffX[i] = round(diffX[i], digits)
+                     diffY[i] = round(diffY[i], digits)
                 diff = []
                 for i in range(0, len(diffX)):
                     diff.append(diffX[i])
@@ -195,5 +197,5 @@ class city_vein():
 
 
 if __name__ == "__main__":
-    obj = city_vein('changsha', '长沙')
+    obj = city_vein('', '')
     obj.generate()
