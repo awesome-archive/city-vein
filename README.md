@@ -18,9 +18,7 @@ python script/main.py
 
 ### Example
 
-TODO 
-
-**台北**
+TODO **台北**
 
 [GitHub Page](https://96486d9b.github.io/city-vein) 
 
