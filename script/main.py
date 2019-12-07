@@ -5,7 +5,7 @@ import bs4
 import logging
 import random
 import math
-
+import pypinyin
 
 logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s')
 logging.root.setLevel(level=logging.INFO)
@@ -13,56 +13,51 @@ logger = logging.getLogger()
 
 
 class city_vein():
-    def __init__(self, city_en, city_zh):
-        self.city_en = city_en
+    def __init__(self, city_zh, line_type=0):
         self.city_zh = city_zh
+        self.city_en = ''.join(pypinyin.lazy_pinyin(self.city_zh))
+        self.city_si = ''.join([i[0] for i in pypinyin.lazy_pinyin(self.city_zh)])
+        if line_type not in [0, 1]:
+            raise TypeError('unvalid line type')
+        self.line_type = line_type
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
         }
 
-    def _get_all_lines(self):
+    def _get_all_buses(self):
         url = 'http://%s.8684.cn' % self.city_en
         html = requests.get(url, headers=self.headers)
-        soup = bs4.BeautifulSoup(html.text, 'lxml')
-        links = []
-        links_number = soup.find('div', class_='bus_kt_r1')
-        if links_number != None:
-            links_number = links_number.find_all('a')
-            links.extend(links_number)
-        links_letter = soup.find('div', class_='bus_kt_r2')
-        if links_letter != None:
-            links_letter = links_letter.find_all('a')
-            links.extend(links_letter)
+        soup = bs4.BeautifulSoup(html.text, 'html.parser')
+        links = soup.find('div', class_='bus-layer').find_all('div', class_='pl10')[:2]
+        links = [[i['href'] for i in link.find_all('a')] for link in links]
+        links = sum(links, [])
         all_lines = []
         for link in links:
-            link_href = link['href']
-            link_html = requests.get(url + link_href, headers=self.headers)
-            link_soup = bs4.BeautifulSoup(link_html.text, 'lxml')
-            lines = link_soup.find('div', class_='stie_list').find_all('a')
+            link_html = requests.get(url + link, headers=self.headers)
+            link_soup = bs4.BeautifulSoup(link_html.text, 'html.parser')
+            lines = link_soup.find_all('div', class_='list')
+            lines = [line.find_all('a') for line in lines]
+            lines = sum(lines, [])
             for line in lines:
-                # line_href = line['href']
                 line_name = line.get_text()
-                # try:
-                #     line_html = requests.get(url + line_href, headers=self.headers)
-                #     line_info = {}
-                #     line_soup = bs4.BeautifulSoup(line_html.text, 'lxml')
-                #     bus_lines = line_soup.find_all('div', class_='bus_line_site')
-                #     for bus_line in bus_lines:
-                #         stations = []
-                #         bus_stations = bus_line.find_all('a')
-                #         for bus_station in bus_stations:
-                #             stations.append(bus_station.get_text())
-                #         if bus_lines.index(bus_line) == 0:
-                #             line_info[line_name] = stations
-                #     all_lines.update(line_info)
-                # except Exception:
-                #     logger.info("some error")
-                #     continue
                 if self.city_en == 'hongkong':
                     all_lines.append(line_name[:line_name.find('(')].strip())
                 else:
                     all_lines.append(line_name)
                 logger.info("get line: %s" % line_name)
+        return len(all_lines), all_lines
+
+    def _get_all_subways(self):
+        url = 'https://dt.8684.cn/{}'.format(self.city_si)
+        html = requests.get(url, headers=self.headers)
+        html.encoding = 'utf-8'
+        soup = bs4.BeautifulSoup(html.text, 'html.parser')
+        links = soup.find('div', class_='ib-box').find_all('a')
+        all_lines = []
+        for link in links:
+            line_name = link.get_text()
+            all_lines.append(line_name)
+            logger.info("get line: %s" % line_name)
         return len(all_lines), all_lines
 
     def _get_line_info(self, line_name):
@@ -116,9 +111,8 @@ class city_vein():
         lat = z * math.sin(theta) + 0.006
         return lng, lat
 
-
-    def _get_bus_lines(self, digits=4):
-        _, lines = self._get_all_lines()
+    def _get_all_lines(self, digits=4):
+        _, lines = self._get_all_buses() if self.line_type == 0 else self._get_all_subways()
         lines_info = []
         for line in lines:
             logger.info("get line info: %s" % line)
@@ -184,18 +178,20 @@ class city_vein():
         return center.split(',')
 
     def generate(self):
-        data = self._get_bus_lines()
-        with open('./data/{}.data'.format(self.city_en), 'w+') as wf:
+        data = self._get_all_lines()
+        suffix = '' if self.line_type == 0 else '_subway'         
+
+        with open('./data/{}{}.data'.format(self.city_en, suffix), 'w+') as wf:
             wf.write(str(data))
 
         center = self._get_city_info()
-        with open('./data/{}.json'.format(self.city_en), 'w+') as wf:
+        with open('./data/{}{}.json'.format(self.city_en, suffix), 'w+') as wf:
             wf.write(str({
                 "position": center,
-                "scale": 11
+                "scale": 11 if self.line_type == 0 else 12
             }).replace("'", '"'))
 
 
 if __name__ == "__main__":
-    obj = city_vein('', '')
+    obj = city_vein(city_zh='', line_type=0)
     obj.generate()
