@@ -188,7 +188,7 @@ class city_vein():
         with open('./data/{}{}.json'.format(self.city_en, suffix), 'w+') as wf:
             wf.write(str({
                 "position": center,
-                "scale": 11 if self.line_type == 0 else 12
+                "scale": 11 if self.line_type == 0 else 10
             }).replace("'", '"'))
 
 
