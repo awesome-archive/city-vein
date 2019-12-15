@@ -7,6 +7,8 @@ import random
 import math
 import pypinyin
 
+from tqdm import tqdm
+
 logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s')
 logging.root.setLevel(level=logging.INFO)
 logger = logging.getLogger()
@@ -17,6 +19,8 @@ class city_vein():
         self.city_zh = city_zh
         self.city_en = ''.join(pypinyin.lazy_pinyin(self.city_zh))
         self.city_si = ''.join([i[0] for i in pypinyin.lazy_pinyin(self.city_zh)])
+        self.city_en = 'hongkong' if self.city_zh == '香港' else self.city_en
+        self.city_si = 'hk' if self.city_zh == '香港' else self.city_si
         if line_type not in [0, 1]:
             raise TypeError('unvalid line type')
         self.line_type = line_type
@@ -32,7 +36,7 @@ class city_vein():
         links = [[i['href'] for i in link.find_all('a')] for link in links]
         links = sum(links, [])
         all_lines = []
-        for link in links:
+        for link in tqdm(links):
             link_html = requests.get(url + link, headers=self.headers)
             link_soup = bs4.BeautifulSoup(link_html.text, 'html.parser')
             lines = link_soup.find_all('div', class_='list')
@@ -44,7 +48,8 @@ class city_vein():
                     all_lines.append(line_name[:line_name.find('(')].strip())
                 else:
                     all_lines.append(line_name)
-                logger.info("get line: %s" % line_name)
+                # logger.info("get line: %s" % line_name)
+        logger.info('get {} line'.format(len(all_lines)))
         return len(all_lines), all_lines
 
     def _get_all_subways(self):
@@ -54,10 +59,11 @@ class city_vein():
         soup = bs4.BeautifulSoup(html.text, 'html.parser')
         links = soup.find('div', class_='ib-box').find_all('a')
         all_lines = []
-        for link in links:
+        for link in tqdm(links):
             line_name = link.get_text()
             all_lines.append(line_name)
-            logger.info("get line: %s" % line_name)
+            # logger.info("get line: %s" % line_name)
+        logger.info('get {} line'.format(len(all_lines)))
         return len(all_lines), all_lines
 
     def _get_line_info(self, line_name):
@@ -89,18 +95,32 @@ class city_vein():
             buslines = content['buslines']
 
             positive_buslines = buslines[0]
-            negative_buslines = buslines[1]
-
-            lines = positive_buslines if random.randint(
-                0, 1) == 1 else negative_buslines
+            try:
+                negative_buslines = buslines[1]
+                lines = positive_buslines if random.randint(
+                    0, 1) == 1 else negative_buslines
+            except Exception:
+                lines = positive_buslines
 
             name = lines['name']
+            try:
+                start_time = int(lines['start_time'])
+                end_time = int(lines['end_time'])
+            except Exception:
+                timedesc = lines['timedesc']
+                timedesc = timedesc.replace('%22', '"').replace('%2C', ',')
+                timedesc = eval(timedesc)
+                time_group = timedesc['rule_group'][0]['time_group'][0]
+                start_time = time_group['start_time']
+                end_time = time_group['end_time']
+                start_time = int('{}{}'.format(start_time[0:2], start_time[3:5]))
+                end_time = int('{}{}'.format(end_time[0:2], end_time[3:5]))
             polyline = lines['polyline']
             busstops = lines['busstops']
 
-            return polyline
-        except Exception:
-            return None
+            return start_time, end_time, polyline
+        except Exception as e:
+            return None, None, None
 
     def _transfer(self, lng, lat):
         x_pi = math.pi * 3000.0 / 180.0
@@ -114,9 +134,9 @@ class city_vein():
     def _get_all_lines(self, digits=4):
         _, lines = self._get_all_buses() if self.line_type == 0 else self._get_all_subways()
         lines_info = []
-        for line in lines:
-            logger.info("get line info: %s" % line)
-            polyline = self._get_line_info(line_name=line)
+        for line in tqdm(lines):
+            # logger.info("get line info: %s" % line)
+            start_time, end_time, polyline = self._get_line_info(line_name=line)
             if polyline != None:
                 polypoints = polyline.split(';')
                 polyX = []
@@ -143,8 +163,12 @@ class city_vein():
                 for i in range(0, len(diffX)):
                     diff.append(diffX[i])
                     diff.append(diffY[i])
-                lines_info.append(diff)
 
+                info = [start_time, end_time, ]
+                info.extend(diff)
+                lines_info.append(info)
+
+        logger.info('get {} lineinfo'.format(len(lines_info)))
         logger.info("recall: %f" % float(len(lines_info) / len(lines)))
         return lines_info
 
@@ -178,6 +202,7 @@ class city_vein():
         return center.split(',')
 
     def generate(self):
+        logger.info('get {} lines'.format(self.city_en))
         data = self._get_all_lines()
         suffix = '' if self.line_type == 0 else '_subway'         
 
@@ -190,6 +215,7 @@ class city_vein():
                 "position": center,
                 "scale": 11 if self.line_type == 0 else 10
             }).replace("'", '"'))
+        logger.info('get {} lines done'.format(self.city_en))
 
 
 if __name__ == "__main__":
