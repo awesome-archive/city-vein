@@ -25,7 +25,8 @@ def getHtml(url):
     while retry_count > 0:
         try:
             # html = requests.get(url, headers=headers)
-            html = requests.get(url, headers=headers, proxies={"http": "http://{}".format(proxy)})
+            html = requests.get(url, headers=headers, proxies={
+                                "http": "http://{}".format(proxy)})
             # if eval(html.content)['status'] == '6':
             #     delete_proxy(proxy)
             #     proxy = get_proxy()
@@ -76,7 +77,8 @@ def extract_stations(bus_line):
         station_name = station['name']
         station_lng = station["xy_coords"].split(";")[0]
         station_lat = station["xy_coords"].split(";")[1]
-        wgs84cor1 = script.coord.gcj02towgs84(float(station_lng), float(station_lat))
+        wgs84cor1 = script.coord.gcj02towgs84(
+            float(station_lng), float(station_lat))
         transfer_lng = wgs84cor1[0]
         transfer_lat = wgs84cor1[1]
         info.append(transfer_lng)
@@ -97,7 +99,8 @@ def extract_line(bus_line):
         info = []
         point_lng = x_set[i]
         point_lat = y_set[i]
-        wgs84cor2 = script.coord.gcj02towgs84(float(point_lng), float(point_lat))
+        wgs84cor2 = script.coord.gcj02towgs84(
+            float(point_lng), float(point_lat))
         transfer_lng = wgs84cor2[0]
         transfer_lat = wgs84cor2[1]
         info.append(transfer_lng)
@@ -126,14 +129,14 @@ def get_geometry_info(line):
         res = req.content
         content = dict(eval(res))
         if (content["data"]["message"]) and content["data"]["busline_list"]:
-            bus_lines = content["data"]["busline_list"]  ##busline 列表
+            bus_lines = content["data"]["busline_list"]  # busline 列表
             bus_line = bus_lines[0]
             bus_stations = extract_stations(bus_line)
             bus_line = extract_line(bus_line)
 
             # print(bus_stations)
             # print(busLine)
-              # 设置随机休眠
+            # 设置随机休眠
             return bus_stations
 
         else:

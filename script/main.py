@@ -1,157 +1,223 @@
+import urllib
 import requests
-import bs4
-
-city = 'wuhan'
-city_CN = "武汉"
-ak = '08eUG0hbUTzFrCFyF2Bn6tSQ7UD0cCaH'
-sk = '4Gzbk6HSzMHkWjjXliEOGM7ZAVvpqg0U'
-part1 = 0
-part2 = 0
-part3 = 0
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'}
-url = 'http://%s.8684.cn' % city
-html = requests.get(url, headers=headers)
-# print (main_html.text)
-soup = bs4.BeautifulSoup(html.text, 'lxml')
-links_number = soup.find('div', class_='bus_kt_r1').find_all('a')
-links_letter = soup.find('div', class_='bus_kt_r2').find_all('a')
-links = links_number + links_letter
-# print(links)
-# 1, 2, 3, 4, B, D
-lines_stations = {}
-for link in links:
-    link_href = link['href']
-    link_html = requests.get(url + link_href, headers=headers)
-    link_soup = bs4.BeautifulSoup(link_html.text, 'lxml')
-    lines = link_soup.find('div', class_='stie_list').find_all('a')
-    for line in lines:
-        line_href = line['href']
-        line_name = line.get_text()
-        try:
-            line_html = requests.get(url + line_href, headers=headers)
-
-            line_info = {}
-            line_soup = bs4.BeautifulSoup(line_html.text, 'lxml')
-            bus_lines = line_soup.find_all('div', class_='bus_line_site')
-            for bus_line in bus_lines:
-                stations = []
-                bus_stations = bus_line.find_all('a')
-                for bus_station in bus_stations:
-                    stations.append(bus_station.get_text())
-                if bus_lines.index(bus_line) == 0:
-                    line_info[line_name] = stations
-
-            lines_stations.update(line_info)
-        except Exception as e:
-            print("[info] some error occur")
-            continue
-        # all_lines.append(line_name)
-        print("[info] get the info of line %s, total: %s" % (line_name, len(lines_stations)))
-    with open("../data/lines_stations_%s.json" % city, "w", encoding='utf-8') as f:
-        part1 = len(lines_stations)
-        f.write(str(lines_stations))
-
-del lines_stations
-
-from urllib import parse
 import hashlib
+import bs4
+import logging
+import random
+import math
+import pypinyin
+
+from tqdm import tqdm
+
+logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s')
+logging.root.setLevel(level=logging.INFO)
+logger = logging.getLogger()
 
 
-def get_poi_position(address):
-    queryStr = '/place/v2/search?query=%s&tag=公交车站&city_limit=true&region=%s&output=json&ak=%s' % (address, city_CN, ak)
-    encodedStr = parse.quote(queryStr, safe="/:=&?#+!$,;'@()*[]")
-    rawStr = encodedStr + sk
-    sn = (hashlib.md5(parse.quote_plus(rawStr).encode("utf-8")).hexdigest())
-    url = parse.quote("http://api.map.baidu.com" + queryStr + "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
-    try:
-        response = requests.get(url)
-        content = eval(response.content)
-        lng = content['results'][0]['location']['lng']
-        lat = content['results'][0]['location']['lat']
+class city_vein():
+    def __init__(self, city_zh, line_type=0):
+        self.city_zh = city_zh
+        self.city_en = ''.join(pypinyin.lazy_pinyin(self.city_zh))
+        self.city_si = ''.join([i[0] for i in pypinyin.lazy_pinyin(self.city_zh)])
+        self.city_en = 'hongkong' if self.city_zh == '香港' else self.city_en
+        self.city_si = 'hk' if self.city_zh == '香港' else self.city_si
+        if line_type not in [0, 1]:
+            raise TypeError('unvalid line type')
+        self.line_type = line_type
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+        }
+
+    def _get_all_buses(self):
+        url = 'http://%s.8684.cn' % self.city_en
+        html = requests.get(url, headers=self.headers)
+        soup = bs4.BeautifulSoup(html.text, 'html.parser')
+        links = soup.find('div', class_='bus-layer').find_all('div', class_='pl10')[:2]
+        links = [[i['href'] for i in link.find_all('a')] for link in links]
+        links = sum(links, [])
+        all_lines = []
+        for link in tqdm(links):
+            link_html = requests.get(url + link, headers=self.headers)
+            link_soup = bs4.BeautifulSoup(link_html.text, 'html.parser')
+            lines = link_soup.find_all('div', class_='list')
+            lines = [line.find_all('a') for line in lines]
+            lines = sum(lines, [])
+            for line in lines:
+                line_name = line.get_text()
+                if self.city_en == 'hongkong':
+                    all_lines.append(line_name[:line_name.find('(')].strip())
+                else:
+                    all_lines.append(line_name)
+                # logger.info("get line: %s" % line_name)
+        logger.info('get {} line'.format(len(all_lines)))
+        return len(all_lines), all_lines
+
+    def _get_all_subways(self):
+        url = 'https://dt.8684.cn/{}'.format(self.city_si)
+        html = requests.get(url, headers=self.headers)
+        html.encoding = 'utf-8'
+        soup = bs4.BeautifulSoup(html.text, 'html.parser')
+        links = soup.find('div', class_='ib-box').find_all('a')
+        all_lines = []
+        for link in tqdm(links):
+            line_name = link.get_text()
+            all_lines.append(line_name)
+            # logger.info("get line: %s" % line_name)
+        logger.info('get {} line'.format(len(all_lines)))
+        return len(all_lines), all_lines
+
+    def _get_line_info(self, line_name):
+        # https://restapi.amap.com/v3/bus/linename?
+        # s=rsv3&extensions=all&key=608d75903d29ad471362f8c58c550daf&output=json&
+        # pageIndex=1&city=%E5%8C%97%E4%BA%AC&offset=1&keywords=536&callback=jsonp_246759_&
+        # platform=JS&logversion=2.0&appname=https%3A%2F%2Flbs.amap.com%2Fapi%2Fjavascript-api%
+        # 2Fexample%2Fbus-search%2Fsearch-bus-route&csid=82FF8B4C-11F6-4370-ABA3-1A05B7108C75&sdkversion=1.4.9
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'
+        }
+        base_url = "https://restapi.amap.com/v3/bus/linename?"
+        params = {
+            's': 'rsv3',
+            'extensions': 'all',
+            'key': '',
+            'output': 'json',
+            'city': self.city_zh,
+            'keywords': line_name,
+        }
+        param_merge = urllib.parse.urlencode(params).replace("%2C", ',')
+        targetUrl = base_url + param_merge
+        try:
+            response = requests.get(targetUrl, headers=self.headers)
+            content = response.content
+            content = dict(eval(content))
+
+            status = content['status']
+            buslines = content['buslines']
+
+            positive_buslines = buslines[0]
+            try:
+                negative_buslines = buslines[1]
+                lines = positive_buslines if random.randint(
+                    0, 1) == 1 else negative_buslines
+            except Exception:
+                lines = positive_buslines
+
+            name = lines['name']
+            try:
+                start_time = int(lines['start_time'])
+                end_time = int(lines['end_time'])
+            except Exception:
+                timedesc = lines['timedesc']
+                timedesc = timedesc.replace('%22', '"').replace('%2C', ',')
+                timedesc = eval(timedesc)
+                time_group = timedesc['rule_group'][0]['time_group'][0]
+                start_time = time_group['start_time']
+                end_time = time_group['end_time']
+                start_time = int('{}{}'.format(start_time[0:2], start_time[3:5]))
+                end_time = int('{}{}'.format(end_time[0:2], end_time[3:5]))
+            polyline = lines['polyline']
+            busstops = lines['busstops']
+
+            return start_time, end_time, polyline
+        except Exception as e:
+            return None, None, None
+
+    def _transfer(self, lng, lat):
+        x_pi = math.pi * 3000.0 / 180.0
+        x, y = lng, lat
+        z = math.sqrt(x * x + y * y) + 0.00002 * math.sin(y * x_pi)
+        theta = math.atan2(y, x) + 0.000003 * math.cos(x * x_pi);
+        lng = z * math.cos(theta) + 0.0065
+        lat = z * math.sin(theta) + 0.006
         return lng, lat
-    # location = content['location']
-    # print(location)
-    except Exception as e:
-        return None, None
+
+    def _get_all_lines(self, digits=4):
+        _, lines = self._get_all_buses() if self.line_type == 0 else self._get_all_subways()
+        lines_info = []
+        for line in tqdm(lines):
+            # logger.info("get line info: %s" % line)
+            start_time, end_time, polyline = self._get_line_info(line_name=line)
+            if polyline != None:
+                polypoints = polyline.split(';')
+                polyX = []
+                polyY = []
+                diffX = []
+                diffY = []
+                for polypoint in polypoints:
+                    x = float(polypoint.split(',')[0])
+                    y = float(polypoint.split(',')[1])
+                    x, y = self._transfer(x, y)
+                    x, y = round(x, digits), round(y, digits)
+                    polyX.append(x)
+                    polyY.append(y)
+
+                diffX.append(polyX[0])
+                diffY.append(polyY[0])
+                for i in range(0, len(polyX)-1):
+                    diffX.append(polyX[i+1] - polyX[i])
+                    diffY.append(polyY[i+1] - polyY[i])
+                for i in range(0, len(diffX)):
+                     diffX[i] = round(diffX[i], digits)
+                     diffY[i] = round(diffY[i], digits)
+                diff = []
+                for i in range(0, len(diffX)):
+                    diff.append(diffX[i])
+                    diff.append(diffY[i])
+
+                info = [start_time, end_time, ]
+                info.extend(diff)
+                lines_info.append(info)
+
+        logger.info('get {} lineinfo'.format(len(lines_info)))
+        logger.info("recall: %f" % float(len(lines_info) / len(lines)))
+        return lines_info
+
+    def _get_city_info(self):
+        api = 'http://restapi.amap.com/v3/config/district?'
+        params = {
+            'key': '',
+            'keywords': '%s' % self.city_zh,
+            'subdistrict': '0',
+            'extensions': 'all'
+        }
+        param_merge = urllib.parse.urlencode(params)
+        url = api + param_merge
+        req = urllib.request.Request(url)
+        res = urllib.request.urlopen(req)
+        content = dict(eval(res.read()))
+        adcode = content['districts'][0]['adcode']
+        center = content['districts'][0]['center']
+        polys = content['districts'][0]['polyline'].split(';')
+        lngs = []
+        lats = []
+        for i in polys:
+            if i.find('|') != -1:
+                continue
+            lng, lat = float(i.split(',')[0]), float(i.split(',')[1])
+            lng, lat = self._transfer(lng, lat)
+            lngs.append(lng)
+            lats.append(lat)
+        lngs.sort()
+        lats.sort()
+        return center.split(',')
+
+    def generate(self):
+        logger.info('get {} lines'.format(self.city_en))
+        data = self._get_all_lines()
+        suffix = '' if self.line_type == 0 else '_subway'         
+
+        with open('./data/{}{}.data'.format(self.city_en, suffix), 'w+') as wf:
+            wf.write(str(data))
+
+        center = self._get_city_info()
+        with open('./data/{}{}.json'.format(self.city_en, suffix), 'w+') as wf:
+            wf.write(str({
+                "position": center,
+                "scale": 11 if self.line_type == 0 else 10
+            }).replace("'", '"'))
+        logger.info('get {} lines done'.format(self.city_en))
 
 
-lines_geometry = []
-
-with open('../data/lines_stations_%s.json' % city, "r", encoding='utf-8') as f:
-    lines = dict(eval(f.read()))
-    for name, stations in lines.items():
-        line = []
-        lng_1, lat_1 = get_poi_position(stations[0])
-        lng_2, lat_2 = get_poi_position(stations[-1])
-        if lng_1 != None and lng_2 != None:
-            line.append(lng_1)
-            line.append(lat_1)
-            line.append(lng_2)
-            line.append(lat_2)
-        if len(line):
-            lines_geometry.append(line)
-            print("[info] process line %s, total: %d" % (name, len(lines_geometry)))
-
-with open('../data/lines_geometry_%s.json' % city, 'w', encoding='utf-8') as f:
-    part2 = len(lines_geometry)
-    f.write(str(lines_geometry))
-
-del lines_geometry
-
-def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
-    global null
-    null = ''
-    queryStr = '/direction/v2/transit?origin=%f,%f&destination=%f,%f&ak=%s' % (
-        start_lat, start_lng, end_lat, end_lng, ak)
-    encodedStr = parse.quote(queryStr, safe="/:=&?#+!$,;'@()*[]")
-    rawStr = encodedStr + sk
-    sn = (hashlib.md5(parse.quote_plus(rawStr).encode("utf-8")).hexdigest())
-    url = parse.quote("http://api.map.baidu.com" + queryStr + "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
-    try:
-        response = requests.get(url)
-        content = response.content
-        content = dict(eval(content))
-        steps = content['result']['routes'][0]['steps']
-        route = []
-        for step in steps:
-            path = step[0]['path']
-            polylines = path.split(';')
-            for polyline in polylines:
-                lng = float(polyline.split(',')[0])
-                lat = float(polyline.split(',')[1])
-                route.append(lng)
-                route.append(lat)
-        for i in range(-2, -len(route), -2):
-            route[i] = int(1e4 * (route[i] - route[i - 2]))
-            route[i + 1] = int(1e4 * (route[i + 1] - route[i - 1]))
-        route[0] = int(1e4 * route[0])
-        route[1] = int(1e4 * route[1])
-        filter_route = []
-        for i in range(0, len(route), 2):
-            if route[i] != 0 or route[i + 1] != 0:
-                filter_route.append(route[i])
-                filter_route.append(route[i + 1])
-        return filter_route
-    except Exception as e:
-        return None
-
-
-with open('../data/lines_geometry_%s.json' % city) as f:
-    lines = list(eval(f.read()))
-lines_data = []
-for line in lines:
-    start_lng, start_lat = line[0], line[1]
-    end_lng, end_lat = line[2], line[3]
-    route = get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat)
-    print("[info] process data [%f, %f]-[%f, %f], total: %d" % (start_lng, start_lat, end_lng, end_lat, len(lines_data)))
-    if route != None and len(route) > 2:
-        lines_data.append(route)
-
-with open('../data/lines_data_%s.json' % city, 'w') as f:
-    part3 = len(lines_data)
-    f.write(str(lines_data))
-
-print('[info] part1-part2: %f' % (part2 / part1))
-print('[info] part2-part3: %f' % (part3 / part2))
+if __name__ == "__main__":
+    obj = city_vein(city_zh='', line_type=0)
+    obj.generate()

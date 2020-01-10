@@ -43,4 +43,3 @@ for link in links:
         print("[INFO] get the info of line %s" % line_name)
     with open("../data/lines_beijing.json", "w", encoding='utf-8') as f:
         f.write(str(all_lines))
-

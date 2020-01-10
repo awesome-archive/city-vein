@@ -2,51 +2,36 @@
 
 城市脉络，以数据还原模样，探寻城市肌理
 
-### Demos
+### Related
+[Echarts Demo](https://gallery.echartsjs.com/editor.html?c=bmap-bus)
 
-[北京](https://96486d9b.github.io/city-vein/html/beijing.html)
+### Page
 
-![](./gif/beijing.gif)
+[GitHub Page](https://96486d9b.github.io/city-vein)
 
-[杭州](https://96486d9b.github.io/city-vein/html/hangzhou.html) 
+### Run
 
-![](./gif/hangzhou.gif)
+```
+zh_en: 'hangzhou' zh_cn: '杭州'
+python script/main.py
+```
 
-[上海](https://96486d9b.github.io/city-vein/html/shanghai.html)
+### Example
 
-![](./gif/shanghai.gif)
+[GitHub Page](https://96486d9b.github.io/city-vein) 澳门 长春 长沙 重庆 大连 贵阳 哈尔滨 海口 合肥 呼和浩特 济南 开封 昆明 兰州 拉萨 洛阳 南昌 南宁 青岛 沈阳 石家庄 苏州 太原 台州 乌鲁木齐 厦门 西宁 银川
 
-[香港](https://96486d9b.github.io/city-vein/html/hongkong.html)
+TODO 台北
 
-![](./gif/hongkong.gif)
+[GIF](https://github.com/96486d9b/city-vein/tree/master/gif) 北京 上海 杭州 成都 广州 深圳 南京 武汉 香港 天津 西安 郑州
 
-[广州](https://96486d9b.github.io/city-vein/html/guangzhou.html)
+![](./gif/beijing-380.gif) ![](./gif/shanghai-380.gif)
 
-![](./gif/guangzhou.gif)
+![](./gif/hangzhou-380.gif) ![](./gif/chengdu-380.gif)
 
-[西安](https://96486d9b.github.io/city-vein/html/xian.html)
+![](./gif/guangzhou-380.gif) ![](./gif/shenzhen-380.gif)
 
-![](./gif/xian.gif)
+![](./gif/nanjing-380.gif) ![](./gif/wuhan-380.gif)
 
-[成都](https://96486d9b.github.io/city-vein/html/chengdu.html)
+![](./gif/hongkong-380.gif) ![](./gif/tianjin-380.gif)
 
-![](./gif/chengdu.gif)
-
-[重庆](https://96486d9b.github.io/city-vein/html/chongqing.html)
-
-![](./gif/chongqing.gif)
-
-[南京](https://96486d9b.github.io/city-vein/html/nanjing.html)
-
-![](./gif/nanjing.gif)
-
-[郑州](https://96486d9b.github.io/city-vein/html/zhengzhou.html)
-[开封](https://96486d9b.github.io/city-vein/html/kaifeng.html)
-[天津](https://96486d9b.github.io/city-vein/html/tianjin.html)
-[银川](https://96486d9b.github.io/city-vein/html/yinchuan.html)
-[长沙](https://96486d9b.github.io/city-vein/html/changsha.html)
-[武汉](https://96486d9b.github.io/city-vein/html/wuhan.html)
-[澳门](https://96486d9b.github.io/city-vein/html/aomen.html)
-
-### TODO
-还在进行中~
+![](./gif/xian-380.gif) ![](./gif/zhengzhou-380.gif)

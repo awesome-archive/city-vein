@@ -90,11 +90,12 @@ def get_bus_info_baidu(start_lng, start_lat, end_lng, end_lat):
     global null
     null = ''
     queryStr = '/direction/v2/transit?origin=%f,%f&destination=%f,%f&ak=%s' % (
-    start_lat, start_lng, end_lat, end_lng, ak)
+        start_lat, start_lng, end_lat, end_lng, ak)
     encodedStr = urllib.parse.quote(queryStr, safe="/:=&?#+!$,;'@()*[]")
     rawStr = encodedStr + sk
     sn = (hashlib.md5(urllib.parse.quote_plus(rawStr).encode("utf8")).hexdigest())
-    url = urllib.parse.quote("http://api.map.baidu.com" + queryStr + "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
+    url = urllib.parse.quote(
+        "http://api.map.baidu.com" + queryStr + "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
     try:
         response = requests.get(url)
         content = response.content

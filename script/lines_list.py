@@ -4,28 +4,36 @@ import requests
 
 ak = ''
 sk = ''
+
+
 def get_position(address):
     province = ''
     city = '北京'
     level = '公交站'
-    queryStr = '/geocoder/v2/?address=%s&output=json&ak=%s' % (province + city + address + level, ak)
+    queryStr = '/geocoder/v2/?address=%s&output=json&ak=%s' % (
+        province + city + address + level, ak)
     encodedStr = parse.quote(queryStr, safe="/:=&?#+!$,;'@()*[]")
     rawStr = encodedStr + sk
     sn = (hashlib.md5(parse.quote_plus(rawStr).encode("utf8")).hexdigest())
-    url = parse.quote("http://api.map.baidu.com" + queryStr + "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
+    url = parse.quote("http://api.map.baidu.com" + queryStr +
+                      "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
     response = requests.get(url)
-    lng, lat = response.json()['result']['location']['lng'], response.json()['result']['location']['lat']
-    precise, confidence = response.json()['result']['precise'], response.json()['result']['confidence']
+    lng, lat = response.json()['result']['location']['lng'], response.json()[
+        'result']['location']['lat']
+    precise, confidence = response.json()['result']['precise'], response.json()[
+        'result']['confidence']
     return lng, lat, precise, confidence
 
 
 def get_poi_position(address):
     city = "北京"
-    queryStr = '/place/v2/search?query=%s&tag=公交车站&region=%s&output=json&ak=%s' % (address, city, ak)
+    queryStr = '/place/v2/search?query=%s&tag=公交车站&region=%s&output=json&ak=%s' % (
+        address, city, ak)
     encodedStr = parse.quote(queryStr, safe="/:=&?#+!$,;'@()*[]")
     rawStr = encodedStr + sk
     sn = (hashlib.md5(parse.quote_plus(rawStr).encode("utf-8")).hexdigest())
-    url = parse.quote("http://api.map.baidu.com" + queryStr + "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
+    url = parse.quote("http://api.map.baidu.com" + queryStr +
+                      "&sn=" + sn, safe="/:=&?#+!$,;'@()*[]")
 
     try:
         response = requests.get(url)
